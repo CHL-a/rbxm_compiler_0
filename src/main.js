@@ -88,16 +88,13 @@ class RBXM_Instance {
 	 * @param {string} cN 
 	 */
 	constructor(cN){
-		/**
-		 * @type {{[string]:any}}
-		 */
+		/** @type {{Object.<string,any>}} */
 		this.properties = {}
 		
-		/**
-		 * @type {RBXM_Instance[]}
-		 */
+		/** @type {RBXM_Instance[]} */
 		this.children = []
 
+		/** @type {string} */
 		this.class_name = cN
 	}
 }
@@ -615,11 +612,6 @@ class RBXM_stream extends bitStream.BitstreamReader{
 	}
 	
 	/**
-	 * @returns {boolean}
-	 */
-	is_bit_one = ()=>!!(this.readSync(1))
-	
-	/**
 	 * 
 	 * @param  {...number} bytes 
 	 * @returns {[true | number,number?]}
@@ -834,11 +826,10 @@ class RBXM{
 		var main_stream = this.main_stream = new RBXM_stream()
 		var minor_stream = this.minor_stream = new RBXM_stream()
 		
-		/**
-		 * @type {Object.<string,string>}
-		 */
+		/** @type {Object.<string,string>} */
 		this.metadata = {}
 		
+		/** @type {RBXM_Instance} */
 		this.root = new RBXM_Instance('ROOT')
 
 		/** @type {Object.<number, RBXM_Instance>} */
@@ -1031,5 +1022,5 @@ module.exports = {
 	RBXM: RBXM,
 	stream: RBXM_stream,
 	instance: RBXM_Instance,
-	class_struct: RBXM_class_struct
+	class_struct: RBXM_class_struct,
 }
