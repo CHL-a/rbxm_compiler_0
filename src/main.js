@@ -5,10 +5,8 @@
  */
 
 const bitStream = require('@astronautlabs/bitstream')
-const { default: Long } = require('long');
+const Long  = require('long');
 const crypto = require('crypto-js')
-
-const temp_bit_stream = new bitStream.BitstreamReader()
 
 /**
  * @template A
@@ -168,9 +166,9 @@ class lz4_struct{
 			// match allowed to be zero because literal length can still be present but it will be the last
 			// thus, this conditional can change to (!match_length)
 
-			if (!matchLength)break;
-			
-			// if match isnt zero, then continue on
+
+			if (this.uncompressed_length <= result.length) 
+				continue;
 
 			// get offset
 			let offset = assert(from.get_bytes(-2), 'Bad offset')
@@ -196,6 +194,7 @@ class lz4_struct{
 				)
 		}
 
+		assert(result.length == this.uncompressed_length, `bad length: compressed=${this.compressed_length},uncomp=${this.uncompressed_length},current=${result.length}`)
 		to.addBuffer(Buffer.from(result))
 	}
 }
@@ -218,7 +217,7 @@ class RBXM_helper {
 	 * @param  {...any} other 
 	 * @returns {A[]}
 	 */
-	extract = (len, ...other) => console.error('Needs implementation.')
+	extract = (len, ...other) => {throw new Error('Needs implementation.')}
 
 	/**
 	 * @param {(len:number,...other)=>A[]} cb
@@ -283,6 +282,27 @@ class RBXM_helper_collection {
 
 				while(!parent.is_empty())
 					result.push(parent.get_roblox_float())
+
+				return result
+		})
+
+		// double
+		collection[0x05] = /** @type {RBXM_helper<number>} */
+			(new RBXM_helper(parent)).set_extract(len => {
+				var result = [];
+				
+				for (let i = 0; i < len; i++) {
+					parent.readBytesSync(result,0,8)
+					result.reverse()
+					parent.addBuffer(Buffer.from(result))
+
+					for (let j = 0; j < 8; j++)
+						result.shift()
+				}
+
+				for (let i = 0; i < len; i++)
+					result.push(parent.get_double())
+
 
 				return result
 		})
@@ -427,14 +447,19 @@ class RBXM_helper_collection {
 
 		// Referents
 		collection[0x13] =/** @type {RBXM_helper<number>} */
-			(new RBXM_helper(parent)).set_extract(len => {
+			(new RBXM_helper(parent)).set_extract((len,instances) => {
 				const result = parent.get_roblox_byte_array(len)
 
 				result.forEach((v,i)=>{
 					result[i] = RBXM_stream.detransform_int(v)
 
-					if (i) result[i] = result[i - 1] - result[i]
+					if (i) result[i] += result[i - 1]
 				})
+
+				if (instances)
+					result.forEach((v,i)=>
+						result[i] = instances[v] || null
+					)
 
 				return result
 			}
@@ -479,8 +504,29 @@ class RBXM_helper_collection {
 		collection[0x1B] =/** @type {RBXM_helper<Long>} */
 		(new RBXM_helper(parent)).set_extract(len => {
 			const result = parent.get_roblox_interleaved_array(8,len)
+			parent.addBuffer(Buffer.from(result));
 
-			console.warn('Needs implementation')
+			while(result.length)result.pop()
+
+			console.warn('check multiple long cases')
+
+			for (let i = 0; i < len; i++) {
+				let higher_bits = parent.get_bytes(4)
+				let long = new Long(parent.get_bytes(4),higher_bits)
+
+				// do int transformation
+				const is_negative = long.isOdd()
+
+				if (is_negative)
+					long = long.sub(1)
+
+				long = long.shiftRightUnsigned(1)
+
+				if (is_negative)
+					long = long.negate()
+
+				result.push(long)
+			}
 
 			return result
 		})
@@ -631,6 +677,26 @@ class RBXM_stream extends bitStream.BitstreamReader{
 		return temp_bit_stream.readFloatSync(32)
 	}
 
+	/**
+	 * Regular double floating point number
+	 */
+	get_double = ()=>{
+		const array = []
+		this.readBytesSync(array,0,8)
+
+		temp_bit_stream.addBuffer(Buffer.from(array))
+
+		const sign_bit = temp_bit_stream.readSync(1)
+		const exponent_bits = temp_bit_stream.readSync(11)
+		const mantissa_bits = temp_bit_stream.readSync(52)
+
+		const divisor = 0x10000000000000
+
+		return (((sign_bit^1)<<1)-1) * // sign
+			(2**(exponent_bits - 0x3FF)) * // exponent
+			((mantissa_bits/divisor)+1) // mantissa
+	}
+
 	// Roblox necessary methods
 	get_roblox_string = () => this.readStringSync(this.get_bytes(-4))
 
@@ -720,9 +786,9 @@ class RBXM_stream extends bitStream.BitstreamReader{
 	 * @param {number} m Integer, in bits
 	 */
 	get_roblox_rational = (e,m) => {
-		return (2 ** (this.readSync(e--) - ((1 << e) - 1))) 
-			* ((this.readSync(m) / (1 << m)) + 1)
-			* (((this.readSync(1) ^ 1) << 1) - 1)
+		return (2 ** (this.readSync(e--) - ((1 << e) - 1))) // ex
+			* ((this.readSync(m) / (1 << m)) + 1)           // mant
+			* (((this.readSync(1) ^ 1) << 1) - 1)           // sign
 	}
 
 	/**
@@ -734,7 +800,30 @@ class RBXM_stream extends bitStream.BitstreamReader{
 	 * @returns {boolean}
 	 */
 	is_empty = () => !this.isAvailable(1)
+
+	/**
+	 * @private
+	 */
+	print_content = () => {
+		const temp = []
+
+		while (!this.is_empty())
+			temp.push(this.get_bytes())
+
+		var message = temp.reduce((last,v,i)=>{
+			if (!(i % 8))
+				last += '\n\t'
+			
+			return last + `\t${v.toString(16)},`
+		},'[') + '\n]'
+
+		console['log']('content got:', message)
+
+		this.addBuffer(Buffer.from(temp))
+	}
 }
+
+var temp_bit_stream = new RBXM_stream()
 
 class RBXM{
 	/**
@@ -813,7 +902,8 @@ class RBXM{
 				break
 			}
 
-			const LZ4_rec = main_stream.decompress_lz4_to(minor_stream)
+			const LZ4_rec = 
+			main_stream.decompress_lz4_to(minor_stream)
 
 			switch (record_type) {
 				case 'META':
@@ -831,7 +921,6 @@ class RBXM{
 					break;
 				case 'INST':{
 					// create a list of instances of same class name
-
 					const class_set_index = minor_stream.get_bytes(-4)
 					const class_name = minor_stream.get_roblox_string()
 					const data_present = minor_stream.get_bytes()
@@ -847,7 +936,7 @@ class RBXM{
 							.referents
 						)
 						.extract(instance_count)
-						
+					
 					referents.forEach(e =>
 						this.instances[e] = new RBXM_Instance(class_name)
 					);
@@ -872,9 +961,12 @@ class RBXM{
 					const helper = minor_stream.helper_collection
 						.get_helper(data_type)
 
-					assert(helper, `missing helper: dt=${data_type}`)
+					assert(helper, `missing helper: property=${property}, dt=${data_type.toString()}`)
 
-					const values = helper.extract(referents.length)
+					const values = helper.extract(
+						referents.length,
+						(data_type == RBXM_helper_collection.data_types.referents ? this.instances : undefined)
+					)
 
 					referents.forEach((v,i)=>{
 						const instance = this.instances[v]
@@ -896,11 +988,6 @@ class RBXM{
 						.helper_collection.get_helper(
 							RBXM_helper_collection.data_types.referents
 						).extract(objects_len)
-
-						console.log(LZ4_rec)
-						console.log('PRNTS',referents)
-						console.log(parents)
-
 
 					referents.forEach((referent_id,i)=>{
 						const parent_id = parents[i]
