@@ -83,7 +83,14 @@ class AbstractModelFile {
 	 * @param {string} class_name 
 	 */
 	constructor(class_name){
+		/** @type {string} */
 		this.class = class_name
+
+		/** @type {Object.<string,string>} */
+		this.metadata = {}
+
+		/** @type {Instance} */
+		this.root = new Instance('ROOT')
 	}
 }
 

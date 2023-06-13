@@ -2,13 +2,57 @@
 	<Meta name="ExplicitAutoJoints">true</Meta>
 	<External>null</External>
 	<External>nil</External>
-	<Item class="BoolValue" referent="RBXF70E5B71A84B442EB2DFF5BDB5036022">
+	<Item class="BrickColorValue" referent="RBX3F13BECC79A24647B14CE68C7C98267B">
 		<Properties>
 			<BinaryString name="AttributesSerialize"></BinaryString>
-			<string name="Name">Value_0</string>
+			<string name="Name">Value</string>
 			<int64 name="SourceAssetId">-1</int64>
 			<BinaryString name="Tags"></BinaryString>
-			<bool name="Value">true</bool>
+			<int name="Value">1004</int>
 		</Properties>
+		<Item class="CFrameValue" referent="RBXD849762605E2478C95DCEA33269B7692">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<string name="Name">Value</string>
+				<int64 name="SourceAssetId">-1</int64>
+				<BinaryString name="Tags"></BinaryString>
+				<CoordinateFrame name="Value">
+					<X>1</X>
+					<Y>2</Y>
+					<Z>3</Z>
+					<R00>1</R00>
+					<R01>0</R01>
+					<R02>0</R02>
+					<R10>0</R10>
+					<R11>1</R11>
+					<R12>0</R12>
+					<R20>0</R20>
+					<R21>0</R21>
+					<R22>1</R22>
+				</CoordinateFrame>
+			</Properties>
+		</Item>
+		<Item class="NumberValue" referent="RBX73D11F405E0B4BD49A13A1C36E40BEED">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<string name="Name">Value</string>
+				<int64 name="SourceAssetId">-1</int64>
+				<BinaryString name="Tags"></BinaryString>
+				<double name="Value">1.1000000000000000888</double>
+			</Properties>
+		</Item>
+		<Item class="Vector3Value" referent="RBX2289AB1285D84B3583DE5222C1FE005F">
+			<Properties>
+				<BinaryString name="AttributesSerialize"></BinaryString>
+				<string name="Name">Value</string>
+				<int64 name="SourceAssetId">-1</int64>
+				<BinaryString name="Tags"></BinaryString>
+				<Vector3 name="Value">
+					<X>4</X>
+					<Y>5</Y>
+					<Z>6</Z>
+				</Vector3>
+			</Properties>
+		</Item>
 	</Item>
 </roblox>

@@ -756,9 +756,6 @@ class RBXM extends complex_data_types.abstract{
 
 		var minor_stream = this.minor_stream = new Stream()
 		
-		/** @type {Object.<string,string>} */
-		this.metadata = {}
-		
 		/** @type {Instance} */
 		this.root = new complex_data_types.instance('ROOT')
 
