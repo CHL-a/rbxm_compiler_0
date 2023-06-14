@@ -2,17 +2,21 @@
 	<Meta name="ExplicitAutoJoints">true</Meta>
 	<External>null</External>
 	<External>nil</External>
-	<Item class="Color3Value" referent="RBX603F86DD35504AB28D3C4FB9007674A1">
+	<Item class="Decal" referent="RBX0">
 		<Properties>
 			<BinaryString name="AttributesSerialize"></BinaryString>
-			<string name="Name">Value</string>
+			<Color3 name="Color3">
+				<R>1</R>
+				<G>1</G>
+				<B>1</B>
+			</Color3>
+			<token name="Face">5</token>
+			<string name="Name">Decal</string>
 			<int64 name="SourceAssetId">-1</int64>
 			<BinaryString name="Tags"></BinaryString>
-			<Color3 name="Value">
-				<R>1</R>
-				<G>0</G>
-				<B>0</B>
-			</Color3>
+			<Content name="Texture"><url>rbxasset://f00</url></Content>
+			<float name="Transparency">0</float>
+			<int name="ZIndex">1</int>
 		</Properties>
 	</Item>
 </roblox>

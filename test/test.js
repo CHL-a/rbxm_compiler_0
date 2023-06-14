@@ -11,14 +11,15 @@ const _ = (async ()=>{
 	const file_buffer = Buffer.from(u)
 	//*/
 
-	const file_buffer = await file_system.readFile('./test/test.rbxmx')
+	const file_buffer = await file_system.readFile('./test/test.rbxm')
 	
 	const object = new main
-		.rbxmx
+		.rbxm
 		.model_file(file_buffer)
 	
-	console.log(object.root.children[0]
-		.properties)
+	console.log(object.root
+		.children[0].properties
+		)
 	
 })()
  

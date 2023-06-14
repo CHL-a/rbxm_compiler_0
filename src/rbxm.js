@@ -260,7 +260,7 @@ class RBXM_helper_collection {
 			// R
 			for (let i = 0; i < len; i++)
 				result.push(
-					new Color3(
+					new complex_data_types.color3(
 						((parent.get_roblox_float() * 255) >> 0)
 					))
 			
@@ -303,7 +303,11 @@ class RBXM_helper_collection {
 
 			// x
 			for (let i = 0; i < len; i++)
-				result.push(new Vector3(parent.get_roblox_float()))
+				result.push(
+					new complex_data_types.vector3(
+						parent.get_roblox_float()
+					)
+				)
 
 			// y
 			for (let i = 0; i < len; i++)
@@ -324,7 +328,8 @@ class RBXM_helper_collection {
 			// rotation
 			for (let i = 0; i < len; i++) {
 				const cframe_short_cut = parent.get_bytes(1)
-				const object = new CFrame()
+				const object = 
+					new complex_data_types.cframe()
 
 				result.push(object)
 
@@ -402,7 +407,11 @@ class RBXM_helper_collection {
 
 				// r
 				for (let i = 0; i < len; i++)
-					result.push(new Color3(parent.get_bytes()))
+					result.push(
+						new complex_data_types.color3(
+							parent.get_bytes()
+						)
+					)
 
 				// g
 				for (let i = 0; i < len; i++)

@@ -97,13 +97,21 @@ class RBXMX extends complex_data_types.abstract {
 					case 'BinaryString':
 					case 'string':break;
 
+					case 'Content':
+						console.log(v.elements[0])
+						value = v.elements[0]
+							.text || null
+						break;
+
 					case 'int64':
 						//value = Number.parseInt(value)
 						//break;
+					case 'token':
 					case 'int':
 						value = Number.parseInt(value)
 						break;
 
+					case 'float':
 					case 'double':
 						value = Number.parseFloat(value)
 						break;

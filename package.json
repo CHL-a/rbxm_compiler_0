@@ -1,6 +1,6 @@
 {
 	"name": "rbxm_compiler_0",
-	"version": "2.2.2",
+	"version": "2.3.3",
 	"description": "compiles rbxm files",
 	"main": "./src/main.js",
 	"scripts": {
