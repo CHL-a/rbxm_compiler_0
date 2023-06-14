@@ -98,8 +98,11 @@ class RBXMX extends complex_data_types.abstract {
 					case 'string':break;
 
 					case 'Content':
-						value = v.elements[0]
-							.text || null
+						const child_tag = v.elements[0]
+						value = child_tag.name == 'null' ?
+							null :
+							child_tag.elements[0]
+								.text
 						break;
 
 					case 'int64':
