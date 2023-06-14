@@ -98,9 +98,16 @@ class RBXMX extends complex_data_types.abstract {
 					case 'string':break;
 
 					case 'int64':
-						console.log('temp')
-						value = new Number(value)
+						//value = Number.parseInt(value)
+						//break;
+					case 'int':
+						value = Number.parseInt(value)
 						break;
+
+					case 'double':
+						value = Number.parseFloat(value)
+						break;
+
 
 					case 'bool':
 						value = value == 'true'
@@ -118,8 +125,53 @@ class RBXMX extends complex_data_types.abstract {
 									property: property_name
 								}
 							)
-
 						break;
+
+					case 'CoordinateFrame':
+						/** @type {import('./complex_data_types').cframe} */
+						let cframe = value = new complex_data_types.cframe()
+						
+						for (let i = 0; i < 3; i++) {
+							const component_tag = v.elements[i]
+							cframe.position
+								[component_tag.name.toLowerCase()]
+								= Number.parseFloat(
+									component_tag.elements[0].text
+							)
+						}
+
+						cframe.rotation_type = 'matrix'
+
+						for (let i = 0; i < 9; i++)
+							cframe.rotation_matrix[(i/3)>>0]
+								[i%3] = Number.parseFloat(
+									v.elements[3+i]
+									.elements[0].text
+								);
+					
+						break;
+
+					case 'Vector3':
+						let vector3 = value = 
+							new complex_data_types.vector3()
+						
+						v.elements.forEach(w=>
+							vector3[w.name.toLowerCase()]
+								= Number.parseFloat(w.elements[0].text)
+						)
+
+						break
+
+					case 'Color3':
+						let color3 = value = 
+							new complex_data_types.color3()
+
+						v.elements.forEach(w=>
+							color3[w.name.toLowerCase()]
+								= Number.parseFloat(w.elements[0].text)
+						)
+						break
+
 					default:
 						console.log('no type: ', v.name)
 						break;
