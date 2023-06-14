@@ -25,39 +25,6 @@ npm i https://github.com/CHL-a/rbxm_compiler_0
 Mainly lists the classes which should be noted due to file syntax.
 
 ---
-## complex_data_types.abstract
-Represents the model file's abstract class.
-### Properties
-|Param|Type|Description|
-|-|-|-|
-|class|`string`|Represents the class of `this`
-|metadata|`Object.<string,string>`|Metadata of the file, may or may not be used.
-|root|`complex_data_types.instance`|Root holding all heirachal information
----
-
-## rbxm.model_file
-Represents all instances of a model file of `.rbxm`.
-### Superclass: [complex_data_types.abstract](#complex_data_typesabstract)
-### Constructor
-```js
-const obj = new rbxm_compiler
-    .rbxm
-    .model_file(buffer)
-```
-|Param|Type|Description|
-|-|-|-|
-|buffer|[`Buffer`](https://nodejs.org/api/buffer.html#class-buffer)|Input buffer for internal stream.
-### Properties
-|Property|Type|Description|
-|-|-|-|
-|class_structs|`Object.<number,rbxm.class_struct>`|Holds all class structs.|
-|instances|`Object.<number,complex_data_types.instance>`|Holds all instances. Uses referent ids as indexes.|
-|metadata|`Object.<string,string>`|Object with strings for keys and strings for values. Due to the nature of JS objects, all indexes might be subjected to include a prefix in the future.|
-|shared_string_hashes|`Object.<string,number>`| Holds all hashes (encoded in Base64) as indexes and an integer for an array. Mind that this property needs testing.|
-|shared_strings|`string[]`|Holds shared strings within an array.|
-### Methods
-None, at the time being.
----
 
 ## complex_data_types.instance
 Represents a Roblox instance.
@@ -75,7 +42,38 @@ const instance = new rbxm_compiler
 |-|-|-|
 |children|`complex_data_types.instance[]`|Holds all children of the instance.|
 |class_name|`string`|Represents class of the instance.|
-|properties|`Object.<string,any>`|Holds all properties of the instance
+|properties|`Object.<string,any>`|Holds all properties of the instance|
+---
+
+## complex_data_types.abstract
+Represents the model file's abstract class.
+### Properties
+|Param|Type|Description|
+|-|-|-|
+|class|`string`|Represents the class of `this`
+|metadata|`Object.<string,string>`|Metadata of the file, may or may not be used.
+|root|`complex_data_types.instance`|Root holding all heirachal information
+---
+
+## rbxm.model_file
+Represents all instances of a model file of `.rbxm`.
+### Superclass: complex_data_types.abstract
+### Constructor
+```js
+const obj = new rbxm_compiler
+    .rbxm
+    .model_file(buffer)
+```
+|Param|Type|Description|
+|-|-|-|
+|buffer|[`Buffer`](https://nodejs.org/api/buffer.html#class-buffer)|Input buffer for internal stream.
+### Properties
+|Property|Type|Description|
+|-|-|-|
+|class_structs|`Object.<number,rbxm.class_struct>`|Holds all class structs.|
+|instances|`Object.<number,complex_data_types.instance>`|Holds all instances. Uses referent ids as indexes.|
+|shared_string_hashes|`Object.<string,number>`| Holds all hashes (encoded in Base64) as indexes and an integer for an array. Mind that this property needs testing.|
+|shared_strings|`string[]`|Holds shared strings within an array.|
 ---
 
 ## rbxm.class_struct
@@ -100,7 +98,7 @@ const class_struct = new rbxm_compiler
 
 ## rbxmx.model_file
 Constructed from file content of `.rbmxm`
-### Superclass: [complex_data_types.abstract](#complex_data_typesabstract)
+### Superclass: complex_data_types.abstract
 ### Constructor
 ```js
 const obj = new rbxm_compiler
