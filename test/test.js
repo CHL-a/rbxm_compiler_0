@@ -17,9 +17,7 @@ const _ = (async ()=>{
 		.rbxm
 		.model_file(file_buffer)
 	
-	console.log(object.root
-		.children[0].properties
-		)
+	// console.log(object.root.children[0].properties)
 	
 })()
  
