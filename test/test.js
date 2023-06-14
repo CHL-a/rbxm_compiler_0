@@ -17,7 +17,8 @@ const _ = (async ()=>{
 		.rbxmx
 		.model_file(file_buffer)
 	
-	console.log(object.instances)
+	console.log(object.root.children[0]
+		.properties)
 	
 })()
  

@@ -168,7 +168,10 @@ class RBXMX extends complex_data_types.abstract {
 
 						v.elements.forEach(w=>
 							color3[w.name.toLowerCase()]
-								= Number.parseFloat(w.elements[0].text)
+								= Number.parseFloat(
+									w.elements[0]
+									.text
+								)*255
 						)
 						break
 
