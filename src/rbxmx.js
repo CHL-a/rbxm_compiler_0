@@ -98,7 +98,6 @@ class RBXMX extends complex_data_types.abstract {
 					case 'string':break;
 
 					case 'Content':
-						console.log(v.elements[0])
 						value = v.elements[0]
 							.text || null
 						break;
