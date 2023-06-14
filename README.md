@@ -115,3 +115,24 @@ const obj = new rbxm_compiler
 |attributes|`Object.<string,any>`|Refers to attribute tag of roblox tag|
 |root_tag|`xml-js.Element`|Refers to a lower tag from root, holds all heirachy information of the xml tag.|
 |instances|`Objects.<string, complex_data_types.instance>`| Serves the same purpose as `rbxm.model_file.instances` but uses a string for indexes.
+
+---
+
+# Methods
+## shared.is_rbxm
+### Example
+```js
+const rbxm_type = rbxm_compiler
+    .shared
+    .is_rbxm(buffer)
+```
+### Parameters
+|Param|Type|Description|
+|-|-|-|
+|buffer|`Buffer`|Buffer input of file content
+
+### Return Values
+|Type|Description|
+|-|-|
+|`string`|Either `"rbxm"` or `"rbxmx"`
+|`false`|None of the above.
